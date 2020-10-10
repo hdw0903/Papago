@@ -5,7 +5,7 @@ const PapagoAPI = () => {
   const [value, setValue] = useState('');
   // const data = {
   //   source: 'en',
-  //   targrt: 'ko',
+  //   target: 'ko',
   //   text: value,
   // };
   // const headers = {
@@ -29,18 +29,21 @@ const PapagoAPI = () => {
     try {
       await axios({
         method: 'POST',
-        url: 'https://papago.naver.com/apis/nsmt/translate',
+        url: 'https://openapi.naver.com/v1/papago/n2mt',
         // 'https://openapi.naver.com/v1/papago/n2mt',
         // https://naveropenapi.apigw.ntruss.com/nmt/v1/translation
         // https://papago.naver.com/apis/nsmt/translate
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Content-type': 'application/json; charset=UTF-8',
+          // 'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
           Accept: '*/*',
-          'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-          'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
+          // 'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
+          // 'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
+          'X-Naver-Client-Id': 'teiUxfbKlk3VkZmDdelI',
+          'X-Naver-Client-Secret': '0ylDP76Hzz',
         },
-        data: { source: 'en', targrt: 'ko', text: value },
+        data: { source: 'en', target: 'ko', text: value },
       });
     } catch {
       console.error();
