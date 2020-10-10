@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/papago/static/css/main.5f361e03.chunk.css",
-    "main.js": "/papago/static/js/main.482f6fbc.chunk.js",
-    "main.js.map": "/papago/static/js/main.482f6fbc.chunk.js.map",
+    "main.js": "/papago/static/js/main.e0290874.chunk.js",
+    "main.js.map": "/papago/static/js/main.e0290874.chunk.js.map",
     "runtime-main.js": "/papago/static/js/runtime-main.44283726.js",
     "runtime-main.js.map": "/papago/static/js/runtime-main.44283726.js.map",
     "static/js/2.4404bbfa.chunk.js": "/papago/static/js/2.4404bbfa.chunk.js",
     "static/js/2.4404bbfa.chunk.js.map": "/papago/static/js/2.4404bbfa.chunk.js.map",
     "index.html": "/papago/index.html",
-    "precache-manifest.07478e945788f9d45fab26e95c612561.js": "/papago/precache-manifest.07478e945788f9d45fab26e95c612561.js",
+    "precache-manifest.6877b1ceada07ac6784e1f3dc206b408.js": "/papago/precache-manifest.6877b1ceada07ac6784e1f3dc206b408.js",
     "service-worker.js": "/papago/service-worker.js",
     "static/css/main.5f361e03.chunk.css.map": "/papago/static/css/main.5f361e03.chunk.css.map",
     "static/js/2.4404bbfa.chunk.js.LICENSE.txt": "/papago/static/js/2.4404bbfa.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.44283726.js",
     "static/js/2.4404bbfa.chunk.js",
     "static/css/main.5f361e03.chunk.css",
-    "static/js/main.482f6fbc.chunk.js"
+    "static/js/main.e0290874.chunk.js"
   ]
 }

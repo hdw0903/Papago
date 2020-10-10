@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e09fa52ff7f8d14b0665d11c579e7567",
+    "revision": "db8444ce5e2d9bcbeabc67b91d6cda30",
     "url": "/papago/index.html"
   },
   {
-    "revision": "47fcae0a65b50317337f",
+    "revision": "94b067178790f9219787",
     "url": "/papago/static/css/main.5f361e03.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/papago/static/js/2.4404bbfa.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "47fcae0a65b50317337f",
-    "url": "/papago/static/js/main.482f6fbc.chunk.js"
+    "revision": "94b067178790f9219787",
+    "url": "/papago/static/js/main.e0290874.chunk.js"
   },
   {
     "revision": "7d89fd9a8090921cf22e",
