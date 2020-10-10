@@ -29,8 +29,7 @@ const PapagoAPI = () => {
     try {
       await axios({
         method: 'POST',
-        Host: 'openapi.naver.com',
-        url: '/v1/papago/n2mt',
+        url: 'https://openapi.naver.com/v1/papago/n2mt',
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
