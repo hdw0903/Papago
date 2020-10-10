@@ -29,7 +29,7 @@ const PapagoAPI = () => {
     try {
       await axios({
         method: 'POST',
-        url: 'https://naveropenapi.apigw.ntruss.com/nmt/v1/translation',
+        url: 'https://papago.naver.com/apis/nsmt/translate',
         // 'https://openapi.naver.com/v1/papago/n2mt',
         // https://naveropenapi.apigw.ntruss.com/nmt/v1/translation
         // https://papago.naver.com/apis/nsmt/translate
