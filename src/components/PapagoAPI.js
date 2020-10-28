@@ -1,75 +1,229 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import useDebounce from '../customhooks/Usedebounce';
+import { papagoErrorCodes } from '../errorCodes';
+import './PapagoAPI.css';
+import CopyButton from './CopyButton';
+import { useToastify, toastType } from '../customhooks/UseToastify';
+import langsList from '../supportLanguages';
+import TranslateContainer from './TranslateContainer';
 
 const PapagoAPI = () => {
-  const [value, setValue] = useState('');
-  // const data = {
-  //   source: 'en',
-  //   target: 'ko',
-  //   text: value,
-  // };
-  // const headers = {
-  //   'Access-Control-Allow-Origin': '*',
-  //   'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  //   Accept: '*/*',
-  //   'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-  //   'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
-  // };
-  // const getPost = async () => {
-  //   try {
-  //     await axios.post('http://openapi.naver.com/v1/papago/n2mt', data, {
-  //       headers: headers,
-  //     });
-  //   } catch {
-  //     console.error();
-  //   }
-  // };
-  // getPost();
-  const getPost = async () => {
-    try {
-      await axios({
-        method: 'POST',
-        url: 'https://openapi.naver.com/v1/papago/n2mt',
-        // 'https://openapi.naver.com/v1/papago/n2mt',
-        // https://naveropenapi.apigw.ntruss.com/nmt/v1/translation
-        // https://papago.naver.com/apis/nsmt/translate
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-type': 'application/json; charset=UTF-8',
-          // 'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          Accept: '*/*',
-          // 'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-          // 'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
-          'X-Naver-Client-Id': 'teiUxfbKlk3VkZmDdelI',
-          'X-Naver-Client-Secret': '0ylDP76Hzz',
-        },
-        data: { source: 'en', target: 'ko', text: value },
-      });
-    } catch {
-      console.error();
+  const [inputValue, setInputValue] = useState('');
+  const [translatedText, setTranslatedText] = useState('');
+  const [source, setSource] = useState('');
+  const [target, setTarget] = useState('ko');
+  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300);
+  const [ToastContainer, toastNotify] = useToastify();
+
+  const autoDetect = useMemo(() => {
+    return async () => {
+      try {
+        const detect = await axios.post(
+          '/v1/papago/detectLangs',
+          { query: debouncedValue },
+          {
+            headers: {
+              'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
+              'X-Naver-Client-Secret':
+                process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
+            },
+          }
+        );
+        console.log('autoDetect langCode:', detect.data.langCode);
+
+        let source, target;
+        if (detect.data.langCode !== 'ko') {
+          source = detect.data.langCode;
+          target = 'ko';
+        } else {
+          source = 'ko';
+          target = 'en';
+        }
+
+        return { source, target };
+      } catch (e) {
+        console.error(e);
+      }
+    };
+  }, [debouncedValue]);
+  const translate = useMemo(() => {
+    return async (sourceTargetInfo) => {
+      console.log('sourceTargetInfo', sourceTargetInfo);
+      const currentSource = sourceTargetInfo ? sourceTargetInfo.source : source;
+      const currentTarget = sourceTargetInfo ? sourceTargetInfo.target : target;
+      console.log('currentSource:', currentSource);
+      console.log('currentTarget:', target);
+      try {
+        const res = await axios.post(
+          '/v1/papago/n2mt',
+          {
+            source: currentSource,
+            target: currentTarget,
+            text: debouncedValue,
+          },
+          {
+            headers: {
+              'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
+              'X-Naver-Client-Secret':
+                process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
+            },
+          }
+        );
+        setTranslatedText(res.data.message.result.translatedText);
+      } catch (e) {
+        if (papagoErrorCodes.hasOwnProperty(e.response.data.errorCode)) {
+          toastNotify(
+            papagoErrorCodes[e.response.data.errorCode],
+            toastType.ERROR
+          );
+        } else {
+          toastNotify(e.response.data.errorMessage, toastType.ERROR);
+          console.error(e.response);
+        }
+      }
+    };
+  }, [debouncedValue, source, target, toastNotify]);
+
+  useEffect(() => {
+    if (debouncedValue) {
+      // IIFE
+      if (!source) {
+        (async () => {
+          const sourceTargetInfo = await autoDetect();
+          translate(sourceTargetInfo);
+        })();
+      } else {
+        translate();
+      }
+
+      // console.log('sourceTargetInfo', sourceTargetInfo);
+
+      // translate(sourceTargetInfo);
+    } else {
+      setTranslatedText('');
     }
-  };
-  getPost();
-  const onSubmit = (e) => {
-    e.preventDefault();
+  }, [debouncedValue, translate, autoDetect, source, target]);
+
+  const search = () => {
+    clearDebounce();
   };
   const onChangeInput = (e) => {
-    setValue(e.target.value);
+    console.log(e);
+    setInputValue(e.target.value);
   };
+
+  const onKeyPress = (e) => {
+    console.log(e.charCode);
+    if (e.charCode === 13) {
+      search();
+    }
+  };
+
+  // const onClickSource = (id) => {
+  //   console.log('onClickSource:', id);
+  //   setSource(id);
+  //   // setDropDownTarget(langsList.id);
+  // };
+
+  // const onClickTarget = (id) => {
+  //   console.log('onClickTarget:', id);
+  //   setTarget(id);
+  // };
+
+  console.log('debouncedValue', debouncedValue);
+
+  const { source: sources = [], target: targets = [] } = useMemo(() => {
+    const getListElement = ({ id, title }, setState) => (
+      <li key={id} onClick={() => setState(id)}>
+        <p>{title}</p>
+      </li>
+    );
+    return langsList.reduce(
+      (acc, cur) => {
+        acc.source.push(getListElement(cur, setSource));
+        acc.target.push(getListElement(cur, setTarget));
+        return acc;
+      },
+      {
+        source: [],
+        target: [],
+      }
+    );
+  }, []);
+  // const en = [
+  //   { id: 'ko', title: '한국어' },
+  //   { id: 'ja', title: '일본어' },
+  //   { id: 'zh-CN', title: '중국어(간체)' },
+  //   { id: 'zh-TW', title: '중국어(번체)' },
+  //   { id: 'fr', title: '프랑스어' },
+  // ];
+  //   const [dropDownSource, setDropDownSource] = useState('');
+  //   const [dropDownTarget, setDropDownTarget] = useState('');
+  // useEffect(()=> {
+  //   if(dropDownTarget)
+  // })
+
   return (
-    <div>
-      <form className="translate-form" onSubmit={onSubmit}>
-        <input
-          placeholder="번역할 텍스트"
-          type="text"
-          autoFocus
-          value={value}
-          onChange={onChangeInput}
-        />
-        <button>번역</button>
-      </form>
-      <div className="translated">번역된 텍스트 </div>
-    </div>
+    <>
+      <div className="container">
+        <div className="translate_lang">
+          <div className="dropdown_lang">
+            <span className="dropdown_text">선택된 언어 : </span>
+            <ul className="dropdown_lang_select">{sources}</ul>
+            <div>
+              <span className="dropdown_text tablet"> 지정된 언어 :</span>
+              <ul className="dropdown_lang_select tablet">{targets}</ul>
+            </div>
+          </div>
+          <div className="translate_form">
+            {/* <textarea
+              className="translate_textarea"
+              placeholder="번역할 텍스트"
+              type="text"
+              autoFocus
+              value={inputValue}
+              onChange={onChangeInput}
+              onKeyPress={onKeyPress}
+            /> */}
+            <TranslateContainer
+              className="translate_textarea"
+              placeholder="번역할 텍스트"
+              autoFocus={true}
+              vale={inputValue}
+              onChange={onChangeInput}
+              onKeyPress={onKeyPress}
+            />
+            <div className="menu_button">
+              <CopyButton text={inputValue} toastNotify={toastNotify} />
+              <button onClick={search}>
+                <img
+                  className="button_img"
+                  src={process.env.PUBLIC_URL + '/img/enter_icon.png'}
+                  alt="번역 버튼"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="translated_lang default">
+          <div className="dropdown_lang default">
+            <span className="dropdown_text default"> 지정된 언어 :</span>
+            <ul className="dropdown_lang_select default">{targets}</ul>
+          </div>
+          <textarea
+            className="translated_textarea"
+            placeholder="번역된 텍스트"
+            value={translatedText}
+            readOnly
+          />
+          <div className="menu_button">
+            <CopyButton text={translatedText} toastNotify={toastNotify} />
+          </div>
+        </div>
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 
