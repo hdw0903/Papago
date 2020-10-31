@@ -167,7 +167,7 @@
 .menu_button button {
   border: 0;
   background: none;
-  width: 13%;
+  width: 11%;
 }
 .menu_button button:active {
   transform: translateY(2px);
@@ -179,16 +179,39 @@
 }
 
 /* 반응형 css */
-.tablet {
+.responsive {
   display: none;
 }
 @media only screen and (max-width: 960px) {
+  .responsive {
+    display: block;
+  }
   .default {
     display: none;
   }
-  .tablet {
-    display: block;
+  .translate_lang {
+    width: 90%;
+  }
+  .dropdown_position_responsive {
+    position: absolute;
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
   }
   .dropdown_lang {
+    position: relative;
+  }
+  .translate_textarea {
+    height: 150px;
+  }
+  .translated_textarea {
+    margin-top: 13px;
+    height: 150px;
+  }
+  .menu_button {
+    display: flex;
+  }
+  .menu_button button {
+    width: 7%;
   }
 }

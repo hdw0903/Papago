@@ -168,12 +168,14 @@ const PapagoAPI = () => {
     <>
       <div className="container">
         <div className="translate_lang">
-          <div className="dropdown_lang">
-            <span className="dropdown_text">선택된 언어 : </span>
-            <ul className="dropdown_lang_select">{sources}</ul>
-            <div>
-              <span className="dropdown_text tablet"> 지정된 언어 :</span>
-              <ul className="dropdown_lang_select tablet">{targets}</ul>
+          <div className="dropdown_position_responsive">
+            <div className="dropdown_lang">
+              <span className="dropdown_text">선택된 언어 : </span>
+              <ul className="dropdown_lang_select">{sources}</ul>
+            </div>
+            <div className="dropdown_lang responsive">
+              <span className="dropdown_text responsive"> 지정된 언어 :</span>
+              <ul className="dropdown_lang_select responsive">{targets}</ul>
             </div>
           </div>
           <div className="translate_form">
@@ -203,6 +205,15 @@ const PapagoAPI = () => {
                   alt="번역 버튼"
                 />
               </button>
+            </div>
+            <textarea
+              className="translated_textarea responsive"
+              placeholder="번역된 텍스트"
+              value={translatedText}
+              readOnly
+            />
+            <div className="menu_button responsive">
+              <CopyButton text={translatedText} toastNotify={toastNotify} />
             </div>
           </div>
         </div>
