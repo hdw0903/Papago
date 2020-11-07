@@ -3,10 +3,12 @@ import axios from 'axios';
 import useDebounce from '../customhooks/Usedebounce';
 import { papagoErrorCodes } from '../errorCodes';
 import './PapagoAPI.css';
-import CopyButton from './CopyButton';
+import ImgButton from './ImgButton';
 import { useToastify, toastType } from '../customhooks/UseToastify';
 import langsList from '../supportLanguages';
-import TranslateContainer from './TranslateContainer';
+import Textarea from './Textarea';
+import { useCallback } from 'react';
+import DropdownSelectBox from './DropdownSelectBox';
 
 const PapagoAPI = () => {
   const [inputValue, setInputValue] = useState('');
@@ -15,7 +17,6 @@ const PapagoAPI = () => {
   const [target, setTarget] = useState('ko');
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300);
   const [ToastContainer, toastNotify] = useToastify();
-
   const autoDetect = useMemo(() => {
     return async () => {
       try {
@@ -30,8 +31,6 @@ const PapagoAPI = () => {
             },
           }
         );
-        console.log('autoDetect langCode:', detect.data.langCode);
-
         let source, target;
         if (detect.data.langCode !== 'ko') {
           source = detect.data.langCode;
@@ -49,11 +48,8 @@ const PapagoAPI = () => {
   }, [debouncedValue]);
   const translate = useMemo(() => {
     return async (sourceTargetInfo) => {
-      console.log('sourceTargetInfo', sourceTargetInfo);
       const currentSource = sourceTargetInfo ? sourceTargetInfo.source : source;
       const currentTarget = sourceTargetInfo ? sourceTargetInfo.target : target;
-      console.log('currentSource:', currentSource);
-      console.log('currentTarget:', target);
       try {
         const res = await axios.post(
           '/v1/papago/n2mt',
@@ -109,127 +105,131 @@ const PapagoAPI = () => {
     clearDebounce();
   };
   const onChangeInput = (e) => {
-    console.log(e);
     setInputValue(e.target.value);
   };
 
   const onKeyPress = (e) => {
-    console.log(e.charCode);
     if (e.charCode === 13) {
       search();
     }
   };
-
-  // const onClickSource = (id) => {
-  //   console.log('onClickSource:', id);
-  //   setSource(id);
-  //   // setDropDownTarget(langsList.id);
-  // };
-
-  // const onClickTarget = (id) => {
-  //   console.log('onClickTarget:', id);
-  //   setTarget(id);
-  // };
-
-  console.log('debouncedValue', debouncedValue);
-
-  const { source: sources = [], target: targets = [] } = useMemo(() => {
-    const getListElement = ({ id, title }, setState) => (
-      <li key={id} onClick={() => setState(id)}>
-        <p>{title}</p>
-      </li>
-    );
+  const targetClick = (id, targets) => {
+    setSource(id);
+    console.log('아이디', id);
+  };
+  const [sourceElement, setSourceElement] = useState(langsList[0].targets);
+  const getListElement = ({ id, title, targets }, setState) => (
+    <li
+      key={id}
+      onClick={() => {
+        setState(id);
+        setSourceElement(targets);
+      }}
+    >
+      <p>{title}</p>
+    </li>
+  );
+  const { source: sources = [] } = useMemo(() => {
     return langsList.reduce(
       (acc, cur) => {
-        acc.source.push(getListElement(cur, setSource));
-        acc.target.push(getListElement(cur, setTarget));
+        acc.source.push(getListElement(cur, targetClick));
         return acc;
       },
       {
         source: [],
-        target: [],
       }
     );
   }, []);
-  // const en = [
-  //   { id: 'ko', title: '한국어' },
-  //   { id: 'ja', title: '일본어' },
-  //   { id: 'zh-CN', title: '중국어(간체)' },
-  //   { id: 'zh-TW', title: '중국어(번체)' },
-  //   { id: 'fr', title: '프랑스어' },
-  // ];
-  //   const [dropDownSource, setDropDownSource] = useState('');
-  //   const [dropDownTarget, setDropDownTarget] = useState('');
-  // useEffect(()=> {
-  //   if(dropDownTarget)
-  // })
-
+  const getTargetElement = sourceElement.map((item) => {
+    console.log('타겟 아이템', item);
+    return (
+      <li
+        key={item.id}
+        onClick={() => {
+          setTarget(item.id);
+        }}
+      >
+        <p>{item.title}</p>
+      </li>
+    );
+  });
+  console.log(getTargetElement);
+  const clipboardCopy = useCallback(
+    (text) => {
+      return () => {
+        navigator.clipboard.writeText(text);
+        toastNotify('🦄 복사되었습니다!');
+      };
+    },
+    [toastNotify]
+  );
   return (
     <>
       <div className="container">
         <div className="translate_lang">
           <div className="dropdown_position_responsive">
-            <div className="dropdown_lang">
-              <span className="dropdown_text">선택된 언어 : </span>
-              <ul className="dropdown_lang_select">{sources}</ul>
-            </div>
-            <div className="dropdown_lang responsive">
-              <span className="dropdown_text responsive"> 지정된 언어 :</span>
-              <ul className="dropdown_lang_select responsive">{targets}</ul>
-            </div>
+            <DropdownSelectBox text="선택된 언어" li={sources} />
+            <DropdownSelectBox
+              text="번역될 언어"
+              isResponsive
+              li={getTargetElement}
+            />
           </div>
           <div className="translate_form">
-            {/* <textarea
+            <Textarea
               className="translate_textarea"
               placeholder="번역할 텍스트"
               type="text"
-              autoFocus
               value={inputValue}
               onChange={onChangeInput}
               onKeyPress={onKeyPress}
-            /> */}
-            <TranslateContainer
-              className="translate_textarea"
-              placeholder="번역할 텍스트"
-              autoFocus={true}
-              vale={inputValue}
-              onChange={onChangeInput}
-              onKeyPress={onKeyPress}
+              autoFocus
             />
             <div className="menu_button">
-              <CopyButton text={inputValue} toastNotify={toastNotify} />
-              <button onClick={search}>
-                <img
-                  className="button_img"
-                  src={process.env.PUBLIC_URL + '/img/enter_icon.png'}
-                  alt="번역 버튼"
-                />
-              </button>
+              <ImgButton
+                onClick={clipboardCopy(inputValue)}
+                className="button_img"
+                src={process.env.PUBLIC_URL + '/img/copy_icon.png'}
+                alt="복사 아이콘"
+              />
+              <ImgButton
+                onClick={search}
+                className="button_img"
+                src={process.env.PUBLIC_URL + '/img/enter_icon.png'}
+                alt="번역 버튼"
+              />
             </div>
-            <textarea
+            <Textarea
               className="translated_textarea responsive"
               placeholder="번역된 텍스트"
               value={translatedText}
               readOnly
             />
             <div className="menu_button responsive">
-              <CopyButton text={translatedText} toastNotify={toastNotify} />
+              <ImgButton
+                onClick={clipboardCopy(translatedText)}
+                className="button_img"
+                src={process.env.PUBLIC_URL + '/img/copy_icon.png'}
+                alt="복사 아이콘"
+              />
             </div>
           </div>
         </div>
         <div className="translated_lang default">
-          <div className="dropdown_lang default">
-            <span className="dropdown_text default"> 지정된 언어 :</span>
-            <ul className="dropdown_lang_select default">{targets}</ul>
-          </div>
-          <textarea
+          <DropdownSelectBox text="번역될 언어" isDefault />
+          <Textarea
             className="translated_textarea"
             placeholder="번역된 텍스트"
             value={translatedText}
             readOnly
           />
           <div className="menu_button">
-            <CopyButton text={translatedText} toastNotify={toastNotify} />
+            <ImgButton
+              onClick={clipboardCopy(translatedText)}
+              className="button_img"
+              src={process.env.PUBLIC_URL + '/img/copy_icon.png'}
+              alt="복사 아이콘"
+            />
           </div>
         </div>
       </div>
