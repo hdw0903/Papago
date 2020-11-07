@@ -203,6 +203,7 @@
   }
   .translate_textarea {
     height: 150px;
+    margin-top: 70px;
   }
   .translated_textarea {
     margin-top: 13px;
@@ -212,6 +213,12 @@
     display: flex;
   }
   .menu_button button {
-    width: 7%;
+    width: 9%;
   }
 }
+
+@media only screen and (max-width: 560px) {
+  .menu_button button {
+    width: 11%;
+  }
+} ;

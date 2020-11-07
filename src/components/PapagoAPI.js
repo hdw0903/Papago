@@ -217,7 +217,11 @@ const PapagoAPI = () => {
           </div>
         </div>
         <div className="translated_lang default">
-          <DropdownSelectBox text="번역될 언어" isDefault />
+          <DropdownSelectBox
+            text={`번역될 언어 : ${targetLangTitle}`}
+            isDefault
+            li={getTargetElement}
+          />
           <Textarea
             className="translated_textarea"
             placeholder="번역된 텍스트"
