@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import useDebounce from '../customhooks/Usedebounce';
-import { papagoErrorCodes } from '../errorCodes';
+import { papagoErrorCodes } from '../error/errorCodes';
 import './PapagoAPI.css';
 import ImgButton from './ImgButton';
 import { useToastify, toastType } from '../customhooks/UseToastify';
-import langsList from '../supportLanguages';
+import langsList from '../data/supportLanguages';
 import Textarea from './Textarea';
 import { useCallback } from 'react';
 import DropdownSelectBox from './DropdownSelectBox';
@@ -17,6 +17,7 @@ const PapagoAPI = () => {
   const [target, setTarget] = useState('ko');
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300);
   const [ToastContainer, toastNotify] = useToastify();
+
   const autoDetect = useMemo(() => {
     return async () => {
       try {
@@ -83,7 +84,6 @@ const PapagoAPI = () => {
 
   useEffect(() => {
     if (debouncedValue) {
-      // IIFE
       if (!source) {
         (async () => {
           const sourceTargetInfo = await autoDetect();
@@ -92,18 +92,11 @@ const PapagoAPI = () => {
       } else {
         translate();
       }
-
-      // console.log('sourceTargetInfo', sourceTargetInfo);
-
-      // translate(sourceTargetInfo);
     } else {
       setTranslatedText('');
     }
   }, [debouncedValue, translate, autoDetect, source, target]);
 
-  const search = () => {
-    clearDebounce();
-  };
   const onChangeInput = (e) => {
     setInputValue(e.target.value);
   };
@@ -111,19 +104,25 @@ const PapagoAPI = () => {
   const onKeyPress = (e) => {
     if (e.charCode === 13) {
       search();
+      console.log('엔터 눌림');
     }
   };
-  const targetClick = (id, targets) => {
-    setSource(id);
-    console.log('아이디', id);
+  const search = () => {
+    clearDebounce();
+    console.log('클리어 디바운스 실행됨');
   };
-  const [sourceElement, setSourceElement] = useState(langsList[0].targets);
+  // 반응형 드롭다운
+
+  const [targetElement, setTargetElement] = useState(langsList[0].targets);
+  const [selectLangTitle, setSelectLangTitle] = useState('언어 감지');
+  const [targetLangTitle, setTargetLangTitle] = useState('언어 감지');
   const getListElement = ({ id, title, targets }, setState) => (
     <li
       key={id}
       onClick={() => {
         setState(id);
-        setSourceElement(targets);
+        setTargetElement(targets);
+        setSelectLangTitle(title);
       }}
     >
       <p>{title}</p>
@@ -132,7 +131,7 @@ const PapagoAPI = () => {
   const { source: sources = [] } = useMemo(() => {
     return langsList.reduce(
       (acc, cur) => {
-        acc.source.push(getListElement(cur, targetClick));
+        acc.source.push(getListElement(cur, setSource));
         return acc;
       },
       {
@@ -140,20 +139,19 @@ const PapagoAPI = () => {
       }
     );
   }, []);
-  const getTargetElement = sourceElement.map((item) => {
-    console.log('타겟 아이템', item);
+  const getTargetElement = targetElement.map((target) => {
     return (
       <li
-        key={item.id}
+        key={target.id}
         onClick={() => {
-          setTarget(item.id);
+          setTarget(target.id);
+          setTargetLangTitle(target.title);
         }}
       >
-        <p>{item.title}</p>
+        <p>{target.title}</p>
       </li>
     );
   });
-  console.log(getTargetElement);
   const clipboardCopy = useCallback(
     (text) => {
       return () => {
@@ -168,9 +166,12 @@ const PapagoAPI = () => {
       <div className="container">
         <div className="translate_lang">
           <div className="dropdown_position_responsive">
-            <DropdownSelectBox text="선택된 언어" li={sources} />
             <DropdownSelectBox
-              text="번역될 언어"
+              text={`선택된 언어 : ${selectLangTitle}`}
+              li={sources}
+            />
+            <DropdownSelectBox
+              text={`번역될 언어 : ${targetLangTitle}`}
               isResponsive
               li={getTargetElement}
             />
