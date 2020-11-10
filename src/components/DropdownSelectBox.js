@@ -6,6 +6,7 @@ const DropdownSelectBox = ({
   isResponsive = false,
   isDefault = false,
   li,
+  p,
 }) => {
   const optionalClassName = useMemo(
     () => `${isResponsive && 'responsive'} ${isDefault && 'default'}`,
@@ -14,7 +15,10 @@ const DropdownSelectBox = ({
 
   return (
     <div className={`dropdown_lang ${optionalClassName}`}>
-      <span className={`dropdown_text ${optionalClassName}`}>{text}</span>
+      <span className={`dropdown_text ${optionalClassName}`}>
+        {text}
+        <p>{p}</p>
+      </span>
       <ul className={`dropdown_lang_select ${optionalClassName}`}>{li}</ul>
     </div>
   );
