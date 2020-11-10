@@ -14,13 +14,17 @@
 
 * 기본적으로 언어 감지기능을 적용하여 한국어 입력시 영어로,
 그외의 언어는 한국어로 변역되게 되어있습니다.
+원한다면 다른 언어를 선택하여 번역할 수 있습니다.
 
-* 원한다면 다른 언어를 선택하여 번역할 수 있습니다.
-Papago 오픈 API를 사용하여 하루 10000쿼리량만 번역할 수 있습니다.
+* Papago 오픈 API를 사용했으며 하루 10000쿼리량만 번역할 수 있습니다.
+
+* react-toastify를 사용하여 토스트를 사용해봤습니다.
 
 * 웹 호스팅은 Github 무료 호스팅 서비스인 gh-pages를 사용했습니다.
 
 * API KEY 값들은 .env 로 gitignore 처리 후 git secrets에 따로 저장해 줬습니다.
+
+-------
 
 ### Skill
 
@@ -35,6 +39,8 @@ Papago 오픈 API를 사용하여 하루 10000쿼리량만 번역할 수 있습�
   * DropdownSelectBox  
 * Dynamic Dropdown
 * Responsive Wep Design
+
+------
 
 ### SupportLanguages
 
