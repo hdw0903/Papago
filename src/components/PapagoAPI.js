@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
+import Axios from 'axios';
 import useDebounce from '../customhooks/Usedebounce';
 import { papagoErrorCodes } from '../error/errorCodes';
 import './PapagoAPI.css';
@@ -15,23 +15,29 @@ const PapagoAPI = () => {
   const [translatedText, setTranslatedText] = useState('');
   const [source, setSource] = useState('');
   const [target, setTarget] = useState('ko');
+  const [targetElement, setTargetElement] = useState(langsList[0].targets);
+  const [selectLangTitle, setSelectLangTitle] = useState('언어 감지');
+  const [targetLangTitle, setTargetLangTitle] = useState('언어 감지');
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300);
   const [ToastContainer, toastNotify] = useToastify();
 
+  const detectURL = '/v1/papago/detectLangs';
+  const translateURL = '/v1/papago/n2mt';
+
+  const axios = (url, body) =>
+    Axios({
+      url: url,
+      body: { body },
+      method: 'post',
+      headers: {
+        'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
+        'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
+      },
+    });
   const autoDetect = useMemo(() => {
     return async () => {
       try {
-        const detect = await axios.post(
-          '/v1/papago/detectLangs',
-          { query: debouncedValue },
-          {
-            headers: {
-              'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-              'X-Naver-Client-Secret':
-                process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
-            },
-          }
-        );
+        const detect = await axios(detectURL, { query: debouncedValue });
         let source, target;
         if (detect.data.langCode !== 'ko') {
           source = detect.data.langCode;
@@ -47,26 +53,17 @@ const PapagoAPI = () => {
       }
     };
   }, [debouncedValue]);
+
   const translate = useMemo(() => {
     return async (sourceTargetInfo) => {
       const currentSource = sourceTargetInfo ? sourceTargetInfo.source : source;
       const currentTarget = sourceTargetInfo ? sourceTargetInfo.target : target;
       try {
-        const res = await axios.post(
-          '/v1/papago/n2mt',
-          {
-            source: currentSource,
-            target: currentTarget,
-            text: debouncedValue,
-          },
-          {
-            headers: {
-              'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-              'X-Naver-Client-Secret':
-                process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
-            },
-          }
-        );
+        const res = await axios(translateURL, {
+          source: currentSource,
+          target: currentTarget,
+          text: debouncedValue,
+        });
         setTranslatedText(res.data.message.result.translatedText);
       } catch (e) {
         if (papagoErrorCodes.hasOwnProperty(e.response.data.errorCode)) {
@@ -104,31 +101,25 @@ const PapagoAPI = () => {
   const onKeyPress = (e) => {
     if (e.charCode === 13) {
       search();
-      console.log('엔터 눌림');
     }
   };
   const search = () => {
     clearDebounce();
-    console.log('클리어 디바운스 실행됨');
   };
-  // 반응형 드롭다운
 
-  const [targetElement, setTargetElement] = useState(langsList[0].targets);
-  const [selectLangTitle, setSelectLangTitle] = useState('언어 감지');
-  const [targetLangTitle, setTargetLangTitle] = useState('언어 감지');
-  const getListElement = ({ id, title, targets }, setState) => (
-    <li
-      key={id}
-      onClick={() => {
-        setState(id);
-        setTargetElement(targets);
-        setSelectLangTitle(title);
-      }}
-    >
-      <p>{title}</p>
-    </li>
-  );
   const { source: sources = [] } = useMemo(() => {
+    const getListElement = ({ id, title, targets }, setState) => (
+      <li
+        key={id}
+        onClick={() => {
+          setState(id);
+          setTargetElement(targets);
+          setSelectLangTitle(title);
+        }}
+      >
+        <p>{title}</p>
+      </li>
+    );
     return langsList.reduce(
       (acc, cur) => {
         acc.source.push(getListElement(cur, setSource));
@@ -139,19 +130,24 @@ const PapagoAPI = () => {
       }
     );
   }, []);
-  const getTargetElement = targetElement.map((target) => {
-    return (
-      <li
-        key={target.id}
-        onClick={() => {
-          setTarget(target.id);
-          setTargetLangTitle(target.title);
-        }}
-      >
-        <p>{target.title}</p>
-      </li>
-    );
-  });
+
+  const getTargetElement = useCallback(
+    targetElement.map((target) => {
+      return (
+        <li
+          key={target.id}
+          onClick={() => {
+            setTarget(target.id);
+            setTargetLangTitle(target.title);
+          }}
+        >
+          <p>{target.title}</p>
+        </li>
+      );
+    }),
+    [targetElement]
+  );
+
   const clipboardCopy = useCallback(
     (text) => {
       return () => {
@@ -167,11 +163,13 @@ const PapagoAPI = () => {
         <div className="translate_lang">
           <div className="dropdown_position_responsive">
             <DropdownSelectBox
-              text={`선택된 언어 : ${selectLangTitle}`}
+              text="선택된 언어 : "
+              p={selectLangTitle}
               li={sources}
             />
             <DropdownSelectBox
-              text={`번역될 언어 : ${targetLangTitle}`}
+              text="번역될 언어 : "
+              p={targetLangTitle}
               isResponsive
               li={getTargetElement}
             />
@@ -218,7 +216,8 @@ const PapagoAPI = () => {
         </div>
         <div className="translated_lang default">
           <DropdownSelectBox
-            text={`번역될 언어 : ${targetLangTitle}`}
+            text="번역될 언어 : "
+            p={targetLangTitle}
             isDefault
             li={getTargetElement}
           />
