@@ -29,15 +29,20 @@
 ### Skill
 
 *  useState, useEffect, useMemo, useCallback
+
 *  Axios
+
 *  CustomHooks 
-  * UseDebounce
-  * UseToastify
+    * UseDebounce
+    * UseToastify
+
 *  CustomComponent
-  * TextArea
-  * ImgButton
-  * DropdownSelectBox  
+    * TextArea
+    * ImgButton
+    * DropdownSelectBox  
+
 * Dynamic Dropdown
+
 * Responsive Wep Design
 
 ------
