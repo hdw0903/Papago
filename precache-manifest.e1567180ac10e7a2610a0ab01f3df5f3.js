@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a2bf0df5044fd6f2ee1e91be872dc065",
+    "revision": "6a8c63b1eecb969be8c1fb708e9bb081",
     "url": "/papago/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/papago/static/css/2.d34346ea.chunk.css"
   },
   {
-    "revision": "996b764bafb296e86442",
+    "revision": "a9bfc53d12e9aa3eb676",
     "url": "/papago/static/css/main.95e76b59.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/papago/static/js/2.16e4f3e3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "996b764bafb296e86442",
-    "url": "/papago/static/js/main.8d546efc.chunk.js"
+    "revision": "a9bfc53d12e9aa3eb676",
+    "url": "/papago/static/js/main.478dea3e.chunk.js"
   },
   {
     "revision": "7d89fd9a8090921cf22e",
