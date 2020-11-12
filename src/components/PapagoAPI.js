@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Axios from 'axios';
 import useDebounce from '../customhooks/Usedebounce';
 import { papagoErrorCodes } from '../error/errorCodes';
@@ -7,7 +7,6 @@ import ImgButton from './ImgButton';
 import { useToastify, toastType } from '../customhooks/UseToastify';
 import langsList from '../data/supportLanguages';
 import Textarea from './Textarea';
-import { useCallback } from 'react';
 import DropdownSelectBox from './DropdownSelectBox';
 
 const PapagoAPI = () => {
@@ -18,26 +17,29 @@ const PapagoAPI = () => {
   const [targetElement, setTargetElement] = useState(langsList[0].targets);
   const [selectLangTitle, setSelectLangTitle] = useState('언어 감지');
   const [targetLangTitle, setTargetLangTitle] = useState('언어 감지');
-  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300);
+  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300000);
   const [ToastContainer, toastNotify] = useToastify();
 
-  const detectURL = '/v1/papago/detectLangs';
-  const translateURL = '/v1/papago/n2mt';
+  const detectURL = 'https://openapi.naver.com/v1/papago/detectLangs';
+  const translateURL = 'https://openapi.naver.com/v1/papago/n2mt';
 
-  const axios = (url, body) =>
-    Axios({
-      url: url,
-      body: { body },
+  const axios = (url, body) => {
+    console.log('axios');
+    return Axios({
       method: 'post',
+      url: url,
+      data: body,
       headers: {
         'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
         'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
       },
     });
+  };
   const autoDetect = useMemo(() => {
     return async () => {
       try {
         const detect = await axios(detectURL, { query: debouncedValue });
+        console.log('detect:', detect);
         let source, target;
         if (detect.data.langCode !== 'ko') {
           source = detect.data.langCode;
@@ -46,7 +48,6 @@ const PapagoAPI = () => {
           source = 'ko';
           target = 'en';
         }
-
         return { source, target };
       } catch (e) {
         console.error(e);
