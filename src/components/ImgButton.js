@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CopyButton = ({ className, onClick, src, alt }) => {
+const ImgButton = ({ className, onClick, src, alt }) => {
   return (
     <button onClick={onClick}>
       <img className={className} src={src} alt={alt} />
@@ -8,4 +8,4 @@ const CopyButton = ({ className, onClick, src, alt }) => {
   );
 };
 
-export default CopyButton;
+export default ImgButton;
