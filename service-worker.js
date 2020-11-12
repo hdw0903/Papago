@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/papago/precache-manifest.e1567180ac10e7a2610a0ab01f3df5f3.js"
+  "/papago/precache-manifest.d39be62b36466a6ee4f595114063e254.js"
 );
 
 self.addEventListener('message', (event) => {
