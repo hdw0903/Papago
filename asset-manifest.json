@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/static/css/main.95e76b59.chunk.css",
-    "main.js": "/static/js/main.0bcd1f8e.chunk.js",
-    "main.js.map": "/static/js/main.0bcd1f8e.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.5a9d858a.js",
-    "runtime-main.js.map": "/static/js/runtime-main.5a9d858a.js.map",
-    "static/css/2.d34346ea.chunk.css": "/static/css/2.d34346ea.chunk.css",
-    "static/js/2.16e4f3e3.chunk.js": "/static/js/2.16e4f3e3.chunk.js",
-    "static/js/2.16e4f3e3.chunk.js.map": "/static/js/2.16e4f3e3.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.2174701ff3dc301e064b88756d14747e.js": "/precache-manifest.2174701ff3dc301e064b88756d14747e.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.d34346ea.chunk.css.map": "/static/css/2.d34346ea.chunk.css.map",
-    "static/css/main.95e76b59.chunk.css.map": "/static/css/main.95e76b59.chunk.css.map",
-    "static/js/2.16e4f3e3.chunk.js.LICENSE.txt": "/static/js/2.16e4f3e3.chunk.js.LICENSE.txt"
+    "main.css": "/papago/static/css/main.95e76b59.chunk.css",
+    "main.js": "/papago/static/js/main.c68cf389.chunk.js",
+    "main.js.map": "/papago/static/js/main.c68cf389.chunk.js.map",
+    "runtime-main.js": "/papago/static/js/runtime-main.44283726.js",
+    "runtime-main.js.map": "/papago/static/js/runtime-main.44283726.js.map",
+    "static/css/2.d34346ea.chunk.css": "/papago/static/css/2.d34346ea.chunk.css",
+    "static/js/2.16e4f3e3.chunk.js": "/papago/static/js/2.16e4f3e3.chunk.js",
+    "static/js/2.16e4f3e3.chunk.js.map": "/papago/static/js/2.16e4f3e3.chunk.js.map",
+    "index.html": "/papago/index.html",
+    "precache-manifest.78e7327df7bcb269f0aa93b18a4d6cae.js": "/papago/precache-manifest.78e7327df7bcb269f0aa93b18a4d6cae.js",
+    "service-worker.js": "/papago/service-worker.js",
+    "static/css/2.d34346ea.chunk.css.map": "/papago/static/css/2.d34346ea.chunk.css.map",
+    "static/css/main.95e76b59.chunk.css.map": "/papago/static/css/main.95e76b59.chunk.css.map",
+    "static/js/2.16e4f3e3.chunk.js.LICENSE.txt": "/papago/static/js/2.16e4f3e3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.5a9d858a.js",
+    "static/js/runtime-main.44283726.js",
     "static/css/2.d34346ea.chunk.css",
     "static/js/2.16e4f3e3.chunk.js",
     "static/css/main.95e76b59.chunk.css",
-    "static/js/main.0bcd1f8e.chunk.js"
+    "static/js/main.c68cf389.chunk.js"
   ]
 }
