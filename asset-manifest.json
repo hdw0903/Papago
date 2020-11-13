@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/papago/static/css/main.95e76b59.chunk.css",
-    "main.js": "/papago/static/js/main.6fffc436.chunk.js",
-    "main.js.map": "/papago/static/js/main.6fffc436.chunk.js.map",
+    "main.js": "/papago/static/js/main.0dedc1bd.chunk.js",
+    "main.js.map": "/papago/static/js/main.0dedc1bd.chunk.js.map",
     "runtime-main.js": "/papago/static/js/runtime-main.44283726.js",
     "runtime-main.js.map": "/papago/static/js/runtime-main.44283726.js.map",
     "static/css/2.d34346ea.chunk.css": "/papago/static/css/2.d34346ea.chunk.css",
     "static/js/2.16e4f3e3.chunk.js": "/papago/static/js/2.16e4f3e3.chunk.js",
     "static/js/2.16e4f3e3.chunk.js.map": "/papago/static/js/2.16e4f3e3.chunk.js.map",
     "index.html": "/papago/index.html",
-    "precache-manifest.9712d601c65290518f56b037cb12a902.js": "/papago/precache-manifest.9712d601c65290518f56b037cb12a902.js",
+    "precache-manifest.dbabf15746f2400324d601dc9870723e.js": "/papago/precache-manifest.dbabf15746f2400324d601dc9870723e.js",
     "service-worker.js": "/papago/service-worker.js",
     "static/css/2.d34346ea.chunk.css.map": "/papago/static/css/2.d34346ea.chunk.css.map",
     "static/css/main.95e76b59.chunk.css.map": "/papago/static/css/main.95e76b59.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.d34346ea.chunk.css",
     "static/js/2.16e4f3e3.chunk.js",
     "static/css/main.95e76b59.chunk.css",
-    "static/js/main.6fffc436.chunk.js"
+    "static/js/main.0dedc1bd.chunk.js"
   ]
 }
