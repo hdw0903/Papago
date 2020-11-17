@@ -28,7 +28,11 @@
 
 ### Skill
 
-*  useState, useEffect, useMemo, useCallback
+*  React { useState, useEffect, useMemo, useCallback }
+
+* Node.js { express, nodemonm, cors, dotenv }
+ 
+* Postman
 
 *  Axios
 
