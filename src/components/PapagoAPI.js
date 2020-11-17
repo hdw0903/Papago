@@ -20,25 +20,36 @@ const PapagoAPI = () => {
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300000);
   const [ToastContainer, toastNotify] = useToastify();
 
-  const detectURL = 'https://openapi.naver.com/v1/papago/detectLangs';
-  const translateURL = 'https://openapi.naver.com/v1/papago/n2mt';
+  const detectURL = 'http://localhost:5000/api/papago/detectLangs';
+  const translateURL = 'http://localhost:5000/api/papago/n2mt';
 
   const axios = (url, body) => {
-    console.log('axios');
     return Axios({
       method: 'post',
       url: url,
       data: body,
-      headers: {
-        'X-Naver-Client-Id': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-        'X-Naver-Client-Secret': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
-      },
     });
   };
+  const errorHandler = useCallback(
+    (e) => {
+      console.log('errorHandler');
+      if (papagoErrorCodes.hasOwnProperty(e.response.data.errorCode)) {
+        toastNotify(
+          papagoErrorCodes[e.response.data.errorCode],
+          toastType.ERROR
+        );
+      } else {
+        toastNotify(e.response.data.errorMessage, toastType.ERROR);
+        console.error('콘솔 에러코드', e.response);
+      }
+    },
+    [toastNotify]
+  );
+
   const autoDetect = useMemo(() => {
     return async () => {
       try {
-        const detect = await axios(detectURL, { query: debouncedValue });
+        const detect = await axios(detectURL, { data: debouncedValue });
         console.log('detect:', detect);
         let source, target;
         if (detect.data.langCode !== 'ko') {
@@ -50,10 +61,10 @@ const PapagoAPI = () => {
         }
         return { source, target };
       } catch (e) {
-        console.error(e);
+        errorHandler(e);
       }
     };
-  }, [debouncedValue]);
+  }, [debouncedValue, errorHandler]);
 
   const translate = useMemo(() => {
     return async (sourceTargetInfo) => {
@@ -65,20 +76,12 @@ const PapagoAPI = () => {
           target: currentTarget,
           text: debouncedValue,
         });
-        setTranslatedText(res.data.message.result.translatedText);
+        setTranslatedText(res.data);
       } catch (e) {
-        if (papagoErrorCodes.hasOwnProperty(e.response.data.errorCode)) {
-          toastNotify(
-            papagoErrorCodes[e.response.data.errorCode],
-            toastType.ERROR
-          );
-        } else {
-          toastNotify(e.response.data.errorMessage, toastType.ERROR);
-          console.error(e.response);
-        }
+        errorHandler(e);
       }
     };
-  }, [debouncedValue, source, target, toastNotify]);
+  }, [debouncedValue, source, target, errorHandler]);
 
   useEffect(() => {
     if (debouncedValue) {
