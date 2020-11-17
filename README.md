@@ -30,9 +30,9 @@
 
 *  React { useState, useEffect, useMemo, useCallback }
 
-* Node.js { express, nodemonm, cors, dotenv }
+*  Node.js { express, nodemonm, cors, dotenv }
  
-* Postman
+*  Postman
 
 *  Axios
 
