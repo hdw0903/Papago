@@ -8,7 +8,7 @@
 }
 /*드롭다운 css*/
 /* 데스크탑 환경에서만 hover */
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 769px) {
   .dropdown_lang:hover > .dropdown_lang_select {
     display: block;
   }
