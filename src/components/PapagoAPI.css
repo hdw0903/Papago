@@ -7,6 +7,15 @@
   width: 45%;
 }
 /*드롭다운 css*/
+/* 데스크탑 환경에서만 hover */
+@media only screen and (min-width: 768px) {
+  .dropdown_lang:hover > .dropdown_lang_select {
+    display: block;
+  }
+  .dropdown_lang .dropdown_lang_select li p:hover {
+    background: #f3f8f8;
+  }
+}
 .dropdown_text {
   display: block;
   margin: 0 auto;
@@ -73,9 +82,6 @@
   border-color: rgba(0, 0, 0, 0.1) transparent;
 }
 
-.dropdown_lang:hover .dropdown_lang_select {
-  display: block;
-}
 .dropdown_lang_select li {
   cursor: pointer;
 }
@@ -106,10 +112,6 @@
 .dropdown_lang .dropdown_lang_select li:last-child {
   border: none;
   border-radius: 0 0 7px 7px;
-}
-
-.dropdown_lang .dropdown_lang_select li p:hover {
-  background: #f3f8f8;
 }
 
 /* 번역 구역 css */
@@ -159,7 +161,7 @@
 .responsive {
   display: none;
 }
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 768px) {
   .responsive {
     display: block;
   }
@@ -177,6 +179,9 @@
   }
   .dropdown_lang {
     position: relative;
+  }
+  .dropdown_clicked {
+    display: block !important;
   }
   .translate_textarea {
     height: 150px;
