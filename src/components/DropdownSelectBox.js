@@ -48,4 +48,4 @@ const DropdownSelectBox = ({
   );
 };
 
-export default DropdownSelectBox;
+export default React.memo(DropdownSelectBox);

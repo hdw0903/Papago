@@ -8,4 +8,4 @@ const ImgButton = ({ className, onClick, src, alt }) => {
   );
 };
 
-export default ImgButton;
+export default React.memo(ImgButton);

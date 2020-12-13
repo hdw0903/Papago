@@ -24,4 +24,4 @@ const TranslateContainer = ({
   );
 };
 
-export default TranslateContainer;
+export default React.memo(TranslateContainer);
