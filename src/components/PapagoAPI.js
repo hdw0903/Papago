@@ -8,6 +8,19 @@ import { useToastify, toastType } from '../customhooks/UseToastify';
 import langsList from '../data/supportLanguages';
 import Textarea from './Textarea';
 import DropdownSelectBox from './DropdownSelectBox';
+import url from '../data/apiUrl';
+
+const errorHandler = (e) => {
+  if (papagoErrorCodes.hasOwnProperty(e.response.data.errorCode)) {
+    return {
+      message: papagoErrorCodes[e.response.data.errorCode],
+      type: toastType.ERROR,
+    };
+  } else {
+    console.error('콘솔 에러코드', e.response);
+    return { message: e.response.data.errorMessage, type: toastType.ERROR };
+  }
+};
 
 const PapagoAPI = () => {
   const [inputValue, setInputValue] = useState('');
@@ -17,40 +30,29 @@ const PapagoAPI = () => {
   const [targetElement, setTargetElement] = useState(langsList[0].targets);
   const [selectLangTitle, setSelectLangTitle] = useState('언어 감지');
   const [targetLangTitle, setTargetLangTitle] = useState('언어 감지');
-  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 300000);
+  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 500);
   const [ToastContainer, toastNotify] = useToastify();
+  const [errorObject, setErrorObject] = useState(undefined);
 
-  const detectURL = 'http://localhost:5000/api/papago/detectLangs';
-  const translateURL = 'http://localhost:5000/api/papago/n2mt';
+  useEffect(() => {
+    if (errorObject) {
+      toastNotify(errorObject.message, errorObject.type);
+      setErrorObject(undefined);
+    }
+  }, [errorObject, toastNotify]);
 
-  const axios = (url, body) => {
+  const axios = (url, data) => {
     return Axios({
       method: 'post',
-      url: url,
-      data: body,
+      url,
+      data,
     });
   };
-  const errorHandler = useCallback(
-    (e) => {
-      console.log('errorHandler');
-      if (papagoErrorCodes.hasOwnProperty(e.response.data.errorCode)) {
-        toastNotify(
-          papagoErrorCodes[e.response.data.errorCode],
-          toastType.ERROR
-        );
-      } else {
-        toastNotify(e.response.data.errorMessage, toastType.ERROR);
-        console.error('콘솔 에러코드', e.response);
-      }
-    },
-    [toastNotify]
-  );
 
   const autoDetect = useMemo(() => {
     return async () => {
       try {
-        const detect = await axios(detectURL, { data: debouncedValue });
-        console.log('detect:', detect);
+        const detect = await axios(url.detectURL, { data: debouncedValue });
         let source, target;
         if (detect.data.langCode !== 'ko') {
           source = detect.data.langCode;
@@ -61,27 +63,27 @@ const PapagoAPI = () => {
         }
         return { source, target };
       } catch (e) {
-        errorHandler(e);
+        setErrorObject(errorHandler(e));
       }
     };
-  }, [debouncedValue, errorHandler]);
+  }, [debouncedValue]);
 
   const translate = useMemo(() => {
     return async (sourceTargetInfo) => {
       const currentSource = sourceTargetInfo ? sourceTargetInfo.source : source;
       const currentTarget = sourceTargetInfo ? sourceTargetInfo.target : target;
       try {
-        const res = await axios(translateURL, {
+        const res = await axios(url.translateURL, {
           source: currentSource,
           target: currentTarget,
           text: debouncedValue,
         });
         setTranslatedText(res.data);
       } catch (e) {
-        errorHandler(e);
+        setErrorObject(errorHandler(e));
       }
     };
-  }, [debouncedValue, source, target, errorHandler]);
+  }, [debouncedValue, source, target]);
 
   useEffect(() => {
     if (debouncedValue) {
@@ -96,17 +98,17 @@ const PapagoAPI = () => {
     } else {
       setTranslatedText('');
     }
-  }, [debouncedValue, translate, autoDetect, source, target]);
+  }, [debouncedValue, source, target, autoDetect, translate]);
 
   const onChangeInput = (e) => {
     setInputValue(e.target.value);
   };
 
-  const onKeyPress = (e) => {
-    if (e.charCode === 13) {
-      search();
-    }
-  };
+  // const onKeyPress = (e) => {
+  //   if (e.charCode === 13) {
+  //     search();
+  //   }
+  // };
   const search = () => {
     clearDebounce();
   };
@@ -185,7 +187,6 @@ const PapagoAPI = () => {
               type="text"
               value={inputValue}
               onChange={onChangeInput}
-              onKeyPress={onKeyPress}
               autoFocus
             />
             <div className="menu_button">
@@ -246,4 +247,4 @@ const PapagoAPI = () => {
   );
 };
 
-export default PapagoAPI;
+export default React.memo(PapagoAPI);
