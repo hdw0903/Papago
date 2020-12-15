@@ -1,6 +1,7 @@
 const endpoint =
-  process.env.REACT_APP_API_URL ||
-  'http://mynodeexpress-env.eba-439z5hhp.ap-northeast-2.elasticbeanstalk.com';
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5000'
+    : 'https://www.tunaserver.ml';
 const url = {
   detectURL: `${endpoint}/api/papago/detectionLangs`,
   translateURL: `${endpoint}/api/papago/translation`,
