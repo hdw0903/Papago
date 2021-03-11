@@ -33,7 +33,6 @@ const PapagoAPI = () => {
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 500);
   const [ToastContainer, toastNotify] = useToastify();
   const [errorObject, setErrorObject] = useState(undefined);
-
   useEffect(() => {
     if (errorObject) {
       toastNotify(errorObject.message, errorObject.type);
@@ -104,11 +103,6 @@ const PapagoAPI = () => {
     setInputValue(e.target.value);
   };
 
-  // const onKeyPress = (e) => {
-  //   if (e.charCode === 13) {
-  //     search();
-  //   }
-  // };
   const search = () => {
     clearDebounce();
   };
